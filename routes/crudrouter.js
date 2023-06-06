@@ -95,19 +95,26 @@ class CrudRouter {
         
         
         
-        router.get('/:id', function (req, res){
+        router.get('/:id', function (req, res, next){
 
-            me.init(req, res);
             let id = req.params.id;
-            let logic = router.logic;
-            logic.session = req.session;
-            logic.get(id).then(function (os)
+            if(!Number.isInteger(id) )
             {
-                res.send(os);
-            }).catch(function (err){
-                console.log("error")
-                res.send(err);
-            })
+                next();
+            }
+            else
+            {
+                me.init(req, res);
+                let logic = router.logic;
+                logic.session = req.session;
+                logic.get(id).then(function (os)
+                {
+                    res.send(os);
+                }).catch(function (err){
+                    console.log("error.get")
+                    res.send(err);
+                })
+            }
         })
         
         router.put('/:id', function (req, res){
