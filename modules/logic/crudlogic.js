@@ -22,12 +22,9 @@ class CrudLogic {
     {
         o = this.initCreate(o);
 
-        console.log("o")
-        console.log(o)
-
         const CurrentModel = this.getModel();
-
         let result = this.validateCreate(o);
+
         if(result.success){
             try {
                 let newO = await CurrentModel.create(o);
@@ -36,12 +33,16 @@ class CrudLogic {
             }
             catch(error)
             {
+                console.log("create error")
+                console.log(error)
                 throw { success: false, message: '', error: error };
             }
             
         }
         else
         {
+            console.log("validation create result")
+            console.log(result)
             throw result
         }
 
@@ -81,6 +82,10 @@ class CrudLogic {
             if(includes != null)
                 opt.include = includes;
                 
+            let attributes = this.getDefaultAttributes();
+            if(attributes != null)
+                opt.attributes = attributes;
+
             let os  = await CurrentModel.findAndCountAll(opt)
             return { success: true, payload: os }
         }
@@ -296,6 +301,11 @@ class CrudLogic {
         });
 
         return where;
+    }
+
+    static getDefaultAttributes()
+    {
+        return null;
     }
 }
 

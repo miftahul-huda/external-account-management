@@ -2,6 +2,8 @@
     { "path" :  "", "router"  : "./routes/web" },
     { "path" :  "/sample", "router"  : "./routes/sample", "logic" : "./modules/logic/sample_logic" },
     { "path" :  "/identity-providers", "router"  : "./routes/identityprovider", "logic" : "./modules/logic/identityproviderlogic" },
-    { "path" :  "/accounts", "router"  : "./routes/account", "logic" : "./modules/logic/accountlogic" }
+    { "path" :  "/accounts", "router"  : "./routes/account", "logic" : "./modules/logic/accountlogic" },
+    { "path" :  "/emails", "router"  : "./routes/email", "logic" : "./modules/logic/emaillogic" }
+
 
 ]

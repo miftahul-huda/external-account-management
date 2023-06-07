@@ -69,7 +69,9 @@ class AccountLogic extends CrudLogic {
 
             const GMAIL_SCOPES = [ 'https://www.googleapis.com/auth/userinfo.email', 
             'https://www.googleapis.com/auth/userinfo.profile',
-            'https://www.googleapis.com/auth/gmail.send'];
+            'https://www.googleapis.com/auth/gmail.send',
+            'https://mail.google.com'];
+            
             let url = oAuth2Client.generateAuthUrl({
                 access_type: 'offline',
                 prompt: 'consent',
@@ -164,7 +166,29 @@ class AccountLogic extends CrudLogic {
             });
 
             if(user == null)
-                throw ({ success: false, message: "User Not found"});
+                throw ({ success: false, message: "Account Not found"});
+            
+            return { success: true, payload: user}
+        }
+        catch(e)
+        {
+            throw ({ success: false, error: e, message: e.message})
+
+        }
+    }
+
+    static async findByEmail(email)
+    {
+        try
+        {
+            let user = await AccountModel.findOne({
+                where: {
+                    email : email
+                }
+            });
+
+            if(user == null)
+                throw ({ success: false, message: "Account Not found"});
             
             return { success: true, payload: user}
         }
@@ -182,6 +206,11 @@ class AccountLogic extends CrudLogic {
         }
 
         return where;
+    }
+
+    static getModelIncludes()
+    {
+        return [ {model: IdentityProviderModel, as: "provider"} ];
     }
 }
 
