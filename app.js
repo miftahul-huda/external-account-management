@@ -35,7 +35,8 @@ app.use(function(req, res, next) {
 //Consider all request as application/json
 app.use(express.json({type: '*/*'}));
 // parse application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json({limit: '200mb'}));
+app.use(bodyParser.urlencoded({limit: '200mb', extended: true}));
 
 app.use(cors());
 

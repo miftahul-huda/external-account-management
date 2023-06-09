@@ -12,7 +12,8 @@ class AccountModel extends Model {
             accessToken: DataTypes.TEXT,
             refreshToken: DataTypes.STRING,
             isActive: DataTypes.INTEGER,
-            authSession: DataTypes.STRING
+            authSession: DataTypes.STRING,
+            user: DataTypes.STRING
         }, 
         { sequelize, modelName: 'account', tableName: 'account', force: force });
     }

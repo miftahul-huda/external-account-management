@@ -28,6 +28,8 @@ class CrudRouter {
             me.init(req, res);
             let logic = router.logic;
             logic.session = req.session;
+            console.log("get")
+            console.log(logic.session)
 
             let offset = req.query.offset;
             let limit = req.query.limit;

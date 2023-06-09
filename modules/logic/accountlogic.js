@@ -27,11 +27,11 @@ class AccountLogic extends CrudLogic {
             [Op.or] :
             [
                 {firstName : {
-                    [Op.like] : "%" + search + "%"
+                    [Op.iLike] : "%" + search + "%"
                 }}
                 ,
                 {lastName : {
-                    [Op.like] : "%" + search + "%"
+                    [Op.iLike] : "%" + search + "%"
                 }}
             ]
 
@@ -71,7 +71,7 @@ class AccountLogic extends CrudLogic {
             'https://www.googleapis.com/auth/userinfo.profile',
             'https://www.googleapis.com/auth/gmail.send',
             'https://mail.google.com'];
-            
+
             let url = oAuth2Client.generateAuthUrl({
                 access_type: 'offline',
                 prompt: 'consent',
@@ -201,8 +201,11 @@ class AccountLogic extends CrudLogic {
 
     static getDefaultWhere()
     {
+        console.log(this.session)
         let where = {
-            isActive: 1
+            
+                [Op.and]: [{isActive: 1}, { user: this.session.user.username }]
+            
         }
 
         return where;
