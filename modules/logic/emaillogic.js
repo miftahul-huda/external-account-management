@@ -62,26 +62,44 @@ class EmailLogic extends CrudLogic {
             let model = this.getModel();
             let emails = await model.findAll({ where: { isSent: 0}});
             emails.map((email)=>{
-                this.sendMail(email).then((resEmail)=>{
-                    console.log("sendMail Done")
-                    try
-                    {
-                        model.update({ isSent:1, sentDate: Date.now() }, {
-                            where: {
-                                id: resEmail.id
+                try
+                {
+                    console.log("update email sent status to 2. ID : " + email.id)
+                    model.update({ isSent:2 }, {
+                        where: {
+                            id: email.id
+                        }
+                    }).then(()=>{
+                        console.log("Sending email. ID : " + email.id)
+                        this.sendMail(email).then((resEmail)=>{
+                            console.log("sendMail Done")
+                            try
+                            {
+                                console.log("update email sent status to 1. ID : " + resEmail.id)
+                                model.update({ isSent:1, sentDate: Date.now() }, {
+                                    where: {
+                                        id: resEmail.id
+                                    }
+                                });
                             }
-                        });
-                        console.log("update email sent status : " + resEmail.id)
-                    }
-                    catch(e)
-                    {
-                        console.log("Error update email sent")
-                        console.log(e)
-                    }
-                }).catch((err)=>{
-                    console.log("Error send email")
-                    console.log(err);
-                })
+                            catch(e)
+                            {
+                                console.log("Error update email sent")
+                                console.log(e)
+                            }
+                        }).catch((err)=>{
+                            console.log("Error send email")
+                            console.log(err);
+                        })
+
+                    })
+                }
+                catch(e)
+                {
+                    console.log("Error processing email. ID : " + email.id)
+                    console.log(e)
+                }
+                
             })
 
             resolve({ success: true });
