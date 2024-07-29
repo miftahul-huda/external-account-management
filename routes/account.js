@@ -15,7 +15,7 @@ class AccountRouter extends CrudRouter{
             req.session.authSession = sessionID;
             logic.session = req.session;
 
-            logic.auth(providerID).then((response)=>{
+            logic.auth(providerID, sessionID).then((response)=>{
                 var dir = __dirname;
                 var p = path.resolve( dir, "../public/pages/", "oauth2");
                 res.render(p, { config: response.payload.url } )
@@ -37,12 +37,18 @@ class AccountRouter extends CrudRouter{
 
         router.get("/callback", function(req, res){
             let code = req.query.code;
+            let state = req.query.state;
+
             logic.session = req.session;
-            logic.callback(code).then((response)=>{
+            logic.callback(code, state).then((response)=>{
+
+                let data = { session: response.payload.authSession};
+                console.log("dataa=-================")
+                console.log(data)
 
                 var dir = __dirname;
                 var p = path.resolve( dir, "../public/pages/", "oauth2-callback");
-                res.render(p );
+                res.render(p, data );
             }).catch((err)=>{
                 res.send(err)
             })

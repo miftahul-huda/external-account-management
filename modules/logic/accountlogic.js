@@ -2,6 +2,7 @@ const { Sequelize, Model, DataTypes } = require('sequelize');
 const { Op } = require("sequelize");
 const { google, oauth2_v2 } = require('googleapis');
 const axios = require('axios');
+const Buffer = require('buffer').Buffer;
 
 
 
@@ -45,7 +46,7 @@ class AccountLogic extends CrudLogic {
         return order;
     }
 
-    static async auth(providerID)
+    static async auth(providerID, sessionID)
     {
         try
         {
@@ -62,8 +63,15 @@ class AccountLogic extends CrudLogic {
 
             console.log("Identity Provider")
             console.log(identityProvider)
+            let sIdentity = JSON.stringify(identityProvider);
+            identityProvider = JSON.parse(sIdentity);
+            identityProvider.session = sessionID;
+            sIdentity = JSON.stringify(identityProvider);
+            let base64EncodeIdentityProvider = Buffer.from(sIdentity).toString('base64');
+            
 
             this.session.identityProvider = identityProvider;
+
             
             const oAuth2Client = new google.auth.OAuth2(identityProvider.cliendID, identityProvider.secretKey, identityProvider.redirectUrl);
 
@@ -76,9 +84,11 @@ class AccountLogic extends CrudLogic {
                 access_type: 'offline',
                 prompt: 'consent',
                 scope: GMAIL_SCOPES,
+                state: base64EncodeIdentityProvider
             });
             
             url = url.replace("client_id=&", "client_id=" + identityProvider.clientID + "&")
+            url = url.replace("\n", "");
             console.log('Authorize this app by visiting this url:', url);
 
             return { success: true, payload: {
@@ -99,14 +109,23 @@ class AccountLogic extends CrudLogic {
     
     
 
-    static async callback(code)
+    static async callback(code, state)
     {
         try
         {
             console.log("Callback code: " + code)
+            console.log("Callback state: " + state)
 
-            let identityProvider = this.session.identityProvider;
-            let sessionID = this.session.authSession;
+
+            let identityProvider = Buffer.from(state, 'base64').toString();
+            identityProvider = JSON.parse(identityProvider);
+            identityProvider.clientID = identityProvider.clientID.replace("\n", "")
+            identityProvider.secretKey = identityProvider.secretKey.replace("\n", "")
+
+            let sessionID = identityProvider.session;
+
+            //let identityProvider = this.session.identityProvider;
+            //let sessionID = this.session.authSession;
             
             console.log("Callback Identity Provider")
             console.log(identityProvider)
@@ -116,6 +135,9 @@ class AccountLogic extends CrudLogic {
 
             const oAuth2Client = new google.auth.OAuth2(identityProvider.clientID, identityProvider.secretKey, identityProvider.redirectUrl);
             let result = await oAuth2Client.getToken(code);
+
+            console.log("await oAuth2Client.getToken(code);")
+            console.log(result)
 
             let profile = await this.getProfile(result.tokens);
 

@@ -9,7 +9,13 @@ class IdentityProviderModel extends Model {
             clientID: DataTypes.STRING,
             secretKey: DataTypes.TEXT,
             redirectUrl: DataTypes.TEXT,
-            providerID: DataTypes.STRING,
+            providerID: 
+            {
+                type: DataTypes.STRING,
+                unique: true,
+                allowNull: false
+            }
+            ,
             website: DataTypes.STRING
         }, 
         { sequelize, modelName: 'identity_provider', tableName: 'identity_provider', force: force });

@@ -6,11 +6,24 @@
 </body>
 
 <script>
+
+    function doStuffOnUnload()
+    {
+        alert("closed")
+    }
+
+
     $(document).ready(function(){
-       var config = "<%=config %>";
-       config = config.replace(/&amp;/gi, "&")
+        var config = "<%=config %>";
+        console.log(config)
+        config = config.replace(/&amp;/gi, "&")
+        console.log(config)
         
-       var myWindow = window.open(config, "", "top=130,left=330,width=500,height=800");
+        window.CallParent = doStuffOnUnload;
+
+        var childWindow = window.open(config, "", "top=130,left=330,width=900,height=800");
+
+
        //location = config;
     })
 </script>

@@ -6,8 +6,12 @@
 </body>
 
 <script>
+
+
     $(document).ready(function(){
-       window.close();
+
+        document.cookie = "externalAccountManagerAddUserSession=<%=session %>; path=/";
+        window.close();
     })
 </script>
 </html>
