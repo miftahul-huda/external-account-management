@@ -1,19 +1,25 @@
-FROM node:18
+# Use a slim Node.js base image to reduce size
+FROM node:16-slim
 
-# Create app directory
-WORKDIR /usr/src/app
+# Create and set the working directory in the container
+WORKDIR /app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
+# Copy package.json and package-lock.json (if available)
 COPY package*.json ./
 
+# Install dependencies
 RUN npm install
-# If you are building your code for production
-# RUN npm ci --omit=dev
 
-# Bundle app source
+# Install PM2 globally
+RUN npm install -g pm2
+
+# Copy the rest of the application code
 COPY . .
 
-EXPOSE 8282
-CMD [ "node", "app.js" ]
+ENV APPLICATION_PORT=2437
+
+# Expose the port your app listens on
+EXPOSE 2437
+
+# Define the command to start your app
+CMD ["pm2-runtime", "start", "ecosystem.config.js"]
