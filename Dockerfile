@@ -1,5 +1,5 @@
 # Use a slim Node.js base image to reduce size
-FROM node:16-slim
+FROM node:20-slim
 
 # Create and set the working directory in the container
 WORKDIR /app
