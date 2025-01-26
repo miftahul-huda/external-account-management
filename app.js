@@ -45,8 +45,8 @@ InitApp.loadEnvironmentVariables().then(()=>{
       dataset: new Datastore(),
       kind: 'express-sessions',
     }),
-    secret: 'levenshtein',saveUninitialized: true,resave: false}));
-  */
+    secret: 'external-account-management',saveUninitialized: true,resave: false}));
+*/
 
   //Dynamic routing based on configuration
   const fs = require('fs');

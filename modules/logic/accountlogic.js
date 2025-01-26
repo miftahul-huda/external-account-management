@@ -226,7 +226,7 @@ class AccountLogic extends CrudLogic {
         console.log(this.session)
         let where = {
             
-                [Op.and]: [{isActive: 1}, { user: this.session.user.username }]
+                [Op.and]: [{isActive: 1}]
             
         }
 
