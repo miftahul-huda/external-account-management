@@ -60,8 +60,7 @@ class AccountRouter extends CrudRouter{
 
     static init(req,res)
     {
-        if(req.headers.user != null)
-            req.session.user = JSON.parse(req.headers.user);
+
     }
 
 }
